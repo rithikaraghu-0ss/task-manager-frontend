@@ -11,8 +11,8 @@ function Dashboard() {
 
   useEffect(() => {
     fetchTasks();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const fetchTasks = async () => {
     try {
       const res = await axios.get('https://task-manager-backend-075l.onrender.com', {
