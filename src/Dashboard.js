@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+const API = 'https://task-manager-backend-075l.onrender.com';
+
 function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState('');
@@ -13,12 +15,13 @@ function Dashboard() {
     fetchTasks();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const fetchTasks = async () => {
     try {
-      const res = await axios.get('https://task-manager-backend-075l.onrender.com', {
+      const res = await axios.get(`${API}/api/tasks`, {
         headers: { Authorization: token }
       });
-      setTasks(res.data);
+      setTasks(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       alert('Please login first!');
       navigate('/');
@@ -27,7 +30,7 @@ function Dashboard() {
 
   const addTask = async () => {
     try {
-      await axios.post('https://task-manager-backend-075l.onrender.com', 
+      await axios.post(`${API}/api/tasks`, 
         { title, description },
         { headers: { Authorization: token } }
       );
@@ -41,7 +44,7 @@ function Dashboard() {
 
   const completeTask = async (id) => {
     try {
-      await axios.put(`https://task-manager-backend-075l.onrender.com/${id}`,
+      await axios.put(`${API}/api/tasks/${id}`,
         {},
         { headers: { Authorization: token } }
       );
@@ -53,7 +56,7 @@ function Dashboard() {
 
   const deleteTask = async (id) => {
     try {
-      await axios.delete(`https://task-manager-backend-075l.onrender.com/${id}`,
+      await axios.delete(`${API}/api/tasks/${id}`,
         { headers: { Authorization: token } }
       );
       fetchTasks();
@@ -73,7 +76,6 @@ function Dashboard() {
         <h2>My Tasks</h2>
         <button onClick={logout}>Logout</button>
       </div>
-
       <div style={{ marginBottom: '20px' }}>
         <input
           type="text"
@@ -91,7 +93,6 @@ function Dashboard() {
         />
         <button onClick={addTask} style={{ padding: '10px 20px' }}>Add Task</button>
       </div>
-
       {tasks.map((task) => (
         <div key={task._id} style={{ 
           border: '1px solid #ccc', 
